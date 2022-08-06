@@ -15,6 +15,8 @@ import bd.banbeis.gov.views.helloworld.HelloWorldView;
 import bd.banbeis.gov.views.imagelist.ImageListView;
 import bd.banbeis.gov.views.masterdetail.MasterDetailView;
 import bd.banbeis.gov.views.personform.PersonFormView;
+import bd.banbeis.gov.views.usermanagement.AddUser;
+import bd.banbeis.gov.views.usermanagement.UserList;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.applayout.AppLayout;
 import com.vaadin.flow.component.applayout.DrawerToggle;
@@ -69,14 +71,35 @@ public class MainLayout extends AppLayout {
         appName.addClassNames("app-name");
 
         com.vaadin.flow.component.html.Section section = new com.vaadin.flow.component.html.Section(appName,
-                createNavigation(), createFooter());
+                createUserManagementNavigation(), createDefaultNaviation(), createFooter());
         section.addClassNames("drawer-section");
+        section.setSizeUndefined();
         return section;
     }
 
-    private AppNav createNavigation() {
-        AppNav nav = new AppNav();
-        nav.addClassNames("app-nav");
+    private void setDefaultAppNavBehavior(AppNav appNav){
+        appNav.setCollapsible(true);
+        appNav.setClassName("app-nav");
+        appNav.setCollapsible(true);
+    }
+
+    private AppNav createUserManagementNavigation(){
+        AppNav nav = new AppNav("User Management");
+        setDefaultAppNavBehavior(nav);
+
+        if(accessChecker.hasAccess(UserList.class)){
+            nav.addItem(new AppNavItem("User List", UserList.class, "la la-user"));
+        }
+
+        if(accessChecker.hasAccess(AddUser.class)){
+            nav.addItem(new AppNavItem("Add user", AddUser.class, "la la-user"));
+        }
+        return nav;
+    }
+
+    private AppNav createDefaultNaviation() {
+        AppNav nav = new AppNav("Default Navigation");
+        setDefaultAppNavBehavior(nav);
 
         if (accessChecker.hasAccess(HelloWorldView.class)) {
             nav.addItem(new AppNavItem("Hello World", HelloWorldView.class, "la la-globe"));
