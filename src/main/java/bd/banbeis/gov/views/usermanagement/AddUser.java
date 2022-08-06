@@ -65,7 +65,7 @@ public class AddUser extends Div {
         Button saveButton = new Button("Save");
         saveButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
         saveButton.addClickListener((clickEvent->{
-            user.setName(nameField.getValue());
+            user.setFullName(nameField.getValue());
             user.setUsername(userNameField.getValue());
             user.setHashedPassword(passwordEncoder.encode(passwordField.getValue()));
             userRepository.save(user);

@@ -21,7 +21,7 @@ public class UpdateUser extends AddUser implements BeforeEnterObserver {
     public void beforeEnter(BeforeEnterEvent beforeEnterEvent) {
         String username = beforeEnterEvent.getRouteParameters().get("username").orElseThrow();
         user = updateUserRepository.findByUsername(username);
-        nameField.setValue(user.getName());
+        nameField.setValue(user.getFullName());
         userNameField.setValue(user.getUsername());
         userNameField.setReadOnly(true);
     }

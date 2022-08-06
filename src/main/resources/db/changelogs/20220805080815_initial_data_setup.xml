@@ -1,0 +1,67 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:pro="http://www.liquibase.org/xml/ns/pro" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/pro http://www.liquibase.org/xml/ns/pro/liquibase-pro-4.6.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.6.xsd">
+    <changeSet author="monju (generated)" id="1659686903879-1">
+        <createTable tableName="application_user">
+            <column name="id" type="VARCHAR(255)">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="application_userPK"/>
+            </column>
+            <column name="username" type="VARCHAR(25)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="full_name" type="VARCHAR(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="email" type="VARCHAR(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="hashed_password" type="VARCHAR(255)"/>
+            <column name="profile_picture_url" type="LONGTEXT"/>
+            <column name="created_by" type="VARCHAR(255)"/>
+            <column name="created_on" type="datetime(6)"/>
+            <column name="updated_by" type="VARCHAR(255)"/>
+            <column name="updated_on" type="datetime(6)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="monju (generated)" id="1659686903879-2">
+        <createTable tableName="application_user_roles">
+            <column name="user_id" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="roles_id" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="monju (generated)" id="1659686903879-3">
+        <createTable tableName="role">
+            <column name="id" type="VARCHAR(255)">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="rolePK"/>
+            </column>
+            <column name="role" type="VARCHAR(15)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="monju (generated)" id="1659686903879-4">
+        <addUniqueConstraint columnNames="email" constraintName="UC_APPLICATION_USEREMAIL_COL" tableName="application_user"/>
+    </changeSet>
+    <changeSet author="monju (generated)" id="1659686903879-5">
+        <addUniqueConstraint columnNames="username" constraintName="UC_APPLICATION_USERUSERNAME_COL" tableName="application_user"/>
+    </changeSet>
+    <changeSet author="monju (generated)" id="1659686903879-6">
+        <addUniqueConstraint columnNames="role" constraintName="UC_ROLEROLE_COL" tableName="role"/>
+    </changeSet>
+    <changeSet author="monju (generated)" id="1659686903879-7">
+        <createIndex indexName="IDX5bogqs5r6lmn76j6nv0w7yrdt" tableName="application_user">
+            <column name="username"/>
+            <column name="full_name"/>
+            <column name="email"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="monju (generated)" id="1659686903879-8">
+        <addForeignKeyConstraint baseColumnNames="user_id" baseTableName="application_user_roles" constraintName="FKf7adbyy81sxssravaxibiktx5" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="application_user" validate="true"/>
+    </changeSet>
+    <changeSet author="monju (generated)" id="1659686903879-9">
+        <addForeignKeyConstraint baseColumnNames="roles_id" baseTableName="application_user_roles" constraintName="FKjqak205427w4trqe5yib9am1c" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="role" validate="true"/>
+    </changeSet>
+</databaseChangeLog>

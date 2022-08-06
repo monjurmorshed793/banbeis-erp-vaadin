@@ -1,5 +1,5 @@
 package bd.banbeis.gov.data;
 
-public enum Role {
+public enum RoleEnum {
     USER, ADMIN;
 }

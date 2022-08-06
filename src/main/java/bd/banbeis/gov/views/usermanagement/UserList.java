@@ -52,7 +52,7 @@ public class UserList extends VerticalLayout {
         userGrid.setDataProvider(dataProvider);
         userGrid.addColumn(User::getId).setHeader("ID");
         userGrid.addColumn(User::getUsername).setHeader("User Name");
-        userGrid.addColumn(User::getName).setHeader("Full Name");
+        userGrid.addColumn(User::getFullName).setHeader("Full Name");
         userGrid.addColumn(User::getProfilePictureUrl).setHeader("Profile Picture");
         userGrid.addComponentColumn(user->{
            Button editButton = new Button("Edit");

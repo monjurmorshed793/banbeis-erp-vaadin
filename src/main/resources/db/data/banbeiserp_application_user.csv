@@ -1,0 +1,3 @@
+id,email,full_name,hashed_password,profile_picture_url,username
+3bc6358d-55fa-45ab-ab42-91cb52d72230,ap_sylhetsadar@banbeis.gov.bd,MONJUR-E-MORSHED,$2a$10$GT6cd/c/huYrpll1jgyS0usBmnHQXMuB3LccmilGfGJjb6HDgBD3K,,ap_sylhetsadar
+526c3209-34fe-4f18-be1e-13586c393a9b,monjurmorshed794@outlook.com,Super User,$2a$10$KRXiYKHi36GfghYrXuuVi.K/Nf9XiSHK/NoZYbfGq/oNp0w6Q6pNK,,admin
