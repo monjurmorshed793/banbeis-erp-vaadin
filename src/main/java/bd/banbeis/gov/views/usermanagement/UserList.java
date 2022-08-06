@@ -1,24 +1,31 @@
 package bd.banbeis.gov.views.usermanagement;
 
-import bd.banbeis.gov.data.entity.User;
-import com.vaadin.flow.component.button.Button;
-import com.vaadin.flow.component.button.ButtonVariant;
-import com.vaadin.flow.component.grid.Grid;
-import com.vaadin.flow.component.orderedlayout.VerticalLayout;
-import com.vaadin.flow.data.provider.DataProvider;
+import javax.annotation.security.PermitAll;
+import javax.swing.*;
+
+import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.data.renderer.LitRenderer;
 import com.vaadin.flow.data.renderer.Renderer;
-import com.vaadin.flow.router.PageTitle;
-import com.vaadin.flow.router.Route;
-import bd.banbeis.gov.views.MainLayout;
-import bd.banbeis.gov.data.service.UserRepository;
-import com.vaadin.flow.router.RouteParam;
-import com.vaadin.flow.router.RouteParameters;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 
-import javax.annotation.security.PermitAll;
-import javax.swing.*;
+import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.button.ButtonVariant;
+import com.vaadin.flow.component.grid.Grid;
+import com.vaadin.flow.component.icon.Icon;
+import com.vaadin.flow.component.icon.VaadinIcon;
+import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.data.provider.DataProvider;
+import com.vaadin.flow.router.PageTitle;
+import com.vaadin.flow.router.Route;
+import com.vaadin.flow.router.RouteParameters;
+
+import bd.banbeis.gov.data.entity.User;
+import bd.banbeis.gov.data.service.UserRepository;
+import bd.banbeis.gov.views.MainLayout;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 
 @PageTitle("User List")
@@ -30,6 +37,7 @@ public class UserList extends VerticalLayout {
 
     public UserList(UserRepository userRepository){
         this.userRepository = userRepository;
+        addNewUserButton();
         setParentVerticalLayout();
         addUserGrid();
     }
@@ -53,6 +61,7 @@ public class UserList extends VerticalLayout {
         userGrid.addColumn(User::getId).setHeader("ID");
         userGrid.addColumn(User::getUsername).setHeader("User Name");
         userGrid.addColumn(User::getFullName).setHeader("Full Name");
+        userGrid.addColumn(createRoleRenderer()).setHeader("Roles");
         userGrid.addColumn(User::getProfilePictureUrl).setHeader("Profile Picture");
         userGrid.addComponentColumn(user->{
            Button editButton = new Button("Edit");
@@ -65,9 +74,32 @@ public class UserList extends VerticalLayout {
         add(userGrid);
     }
 
+    private static Renderer<User> createRoleRenderer(){
+        return LitRenderer.<User>of("<vaadin-label>${item.roles}</vaadin-label>")
+                .withProperty("roles", UserList::getRolesStr);
+    }
+
+    private static String getRolesStr(User user){
+        List<String> roles = user.getRoles()
+                .stream()
+                .map(r-> r.getRole())
+                .collect(Collectors.toList());
+        String rolesStr = String.join(",", roles);
+        return rolesStr;
+    }
+
 
     private void setParentVerticalLayout(){
         setPadding(true);
         setSpacing(true);
+    }
+
+    private void addNewUserButton(){
+        VerticalLayout addButtonLayout = new VerticalLayout();
+        addButtonLayout.setAlignItems(Alignment.END);
+        Button newUserButton = new Button("Add New User", new Icon(VaadinIcon.PLUS));
+        newUserButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
+        addButtonLayout.add(newUserButton);
+        add(addButtonLayout);
     }
 }
