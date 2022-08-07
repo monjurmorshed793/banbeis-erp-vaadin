@@ -36,12 +36,12 @@ public class AddUser extends Div {
     public VerticalLayout verticalLayout = new VerticalLayout();
     FormLayout userFormLayout = new FormLayout();
 
-    public TextField fullNameField = new TextField("Full Name");
-    public TextField usernameField = new TextField("User Name");
-    MultiSelectComboBox<Role> rolesField = new MultiSelectComboBox<>("Roles");
+    public TextField fullName = new TextField("Full Name");
+    public TextField userName = new TextField("User Name");
+    MultiSelectComboBox<Role> roles = new MultiSelectComboBox<>("Roles");
 
-    public PasswordField passwordField = new PasswordField("Password");
-    public PasswordField confirmPasswordField = new PasswordField("Confirm Password");
+    public PasswordField password = new PasswordField("Password");
+    public PasswordField confirmPassword = new PasswordField("Confirm Password");
     Binder<User> userBinder = new BeanValidationBinder<>(User.class);
     public Span passwordValidationText;
 
@@ -65,23 +65,25 @@ public class AddUser extends Div {
     }
 
     protected void configureBinder(){
-        userBinder.forField(fullNameField).bind(User::getFullName, User::setFullName);
-        userBinder.forField(usernameField).bind(User::getUsername, User::setUsername);
-        userBinder.forField(rolesField).bind(User::getRoles, User::setRoles);
-        userBinder.forField(passwordField).bind(User::getPassword, User::setPassword);
-        userBinder.forField(confirmPasswordField).bind(User::getConfirmPassword, User::setConfirmPassword);
+
+        userBinder.forField(fullName)
+                .bind(User::getFullName, User::setFullName);
+        userBinder.forField(userName).bind(User::getUsername, User::setUsername).validate(true);
+        userBinder.forField(roles).bind(User::getRoles, User::setRoles).validate(true);
+        userBinder.forField(password).bind(User::getPassword, User::setPassword);
+        userBinder.forField(confirmPassword).bind(User::getConfirmPassword, User::setConfirmPassword);
         userBinder.readBean(user);
     }
 
     private void configureFormLayout(){
         List<Role> roles = roleRepository.findAll();
-        this.rolesField.setItems(roles);
-        this.rolesField.setItemLabelGenerator(Role::getRole);
+        this.roles.setItems(roles);
+        this.roles.setItemLabelGenerator(Role::getRole);
 
-        userFormLayout.add(fullNameField, usernameField, this.rolesField, passwordField, confirmPasswordField);
+        userFormLayout.add(fullName, userName, this.roles, password, confirmPassword);
         userFormLayout.setResponsiveSteps(new FormLayout.ResponsiveStep("500px", 2));
-        userFormLayout.setColspan(passwordField, 2);
-        userFormLayout.setColspan(confirmPasswordField,2 );
+        userFormLayout.setColspan(password, 2);
+        userFormLayout.setColspan(confirmPassword,2 );
         verticalLayout.add(userFormLayout);
 
         passwordsValidityCheck();
@@ -91,15 +93,15 @@ public class AddUser extends Div {
         Div passwordValidation = new Div();
         passwordValidationText = new Span();
         passwordValidation.add(new Text(""), passwordValidationText);
-        passwordField.setHelperComponent(passwordValidation);
-        passwordField.setValueChangeMode(ValueChangeMode.EAGER);
-        passwordField.addValueChangeListener(e->{
+        password.setHelperComponent(passwordValidation);
+        password.setValueChangeMode(ValueChangeMode.EAGER);
+        password.addValueChangeListener(e->{
             processPasswordValidationCheck();
         });
 
-        confirmPasswordField.setHelperComponent(passwordValidation);
-        confirmPasswordField.setValueChangeMode(ValueChangeMode.EAGER);
-        confirmPasswordField.addValueChangeListener(e->{
+        confirmPassword.setHelperComponent(passwordValidation);
+        confirmPassword.setValueChangeMode(ValueChangeMode.EAGER);
+        confirmPassword.addValueChangeListener(e->{
             processPasswordValidationCheck();
         });
     }
@@ -128,8 +130,8 @@ public class AddUser extends Div {
     }
 
     private void processPasswordValidationCheck(){
-        String mainPassword = passwordField.getValue();
-        String confirmationPassword = confirmPasswordField.getValue();
+        String mainPassword = password.getValue();
+        String confirmationPassword = confirmPassword.getValue();
         if(confirmationPassword!=null && !mainPassword.equals(confirmationPassword)){
             passwordValidationText.setText("Confirmation password should match with the provided password.");
         }else{
