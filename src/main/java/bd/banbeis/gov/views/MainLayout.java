@@ -15,7 +15,7 @@ import bd.banbeis.gov.views.helloworld.HelloWorldView;
 import bd.banbeis.gov.views.imagelist.ImageListView;
 import bd.banbeis.gov.views.masterdetail.MasterDetailView;
 import bd.banbeis.gov.views.personform.PersonFormView;
-import bd.banbeis.gov.views.usermanagement.AddUser;
+import bd.banbeis.gov.views.usermanagement.AddUserView;
 import bd.banbeis.gov.views.usermanagement.UserList;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.applayout.AppLayout;
@@ -91,8 +91,8 @@ public class MainLayout extends AppLayout {
             nav.addItem(new AppNavItem("User List", UserList.class, "la la-user"));
         }
 
-        if(accessChecker.hasAccess(AddUser.class)){
-            nav.addItem(new AppNavItem("Add user", AddUser.class, "la la-user"));
+        if(accessChecker.hasAccess(AddUserView.class)){
+            nav.addItem(new AppNavItem("Add user", AddUserView.class, "la la-user"));
         }
         return nav;
     }

@@ -11,7 +11,7 @@ import javax.annotation.security.PermitAll;
 @PageTitle("Update User")
 @Route(value="update-user/:username?", layout = MainLayout.class)
 @PermitAll
-public class UpdateUser extends AddUser implements BeforeEnterObserver {
+public class UpdateUser extends AddUserView implements BeforeEnterObserver {
     private final UserRepository updateUserRepository;
     public UpdateUser(UserRepository userRepository, RoleRepository roleRepository, PasswordEncoder passwordEncoder, UserRepository updateUserRepository) {
         super(userRepository, passwordEncoder, roleRepository);

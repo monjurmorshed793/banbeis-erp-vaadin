@@ -5,7 +5,6 @@ import bd.banbeis.gov.data.entity.User;
 import bd.banbeis.gov.data.service.RoleRepository;
 import bd.banbeis.gov.data.service.UserRepository;
 import bd.banbeis.gov.views.MainLayout;
-import com.vaadin.flow.component.ComponentEvent;
 import com.vaadin.flow.component.Text;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
@@ -14,6 +13,7 @@ import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.notification.Notification;
+import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.EmailField;
 import com.vaadin.flow.component.textfield.PasswordField;
@@ -31,12 +31,14 @@ import javax.annotation.security.PermitAll;
 import java.util.List;
 
 @PageTitle("Add User")
-@Route(value="add-user", layout = MainLayout.class)
+@Route(value="add-user-view", layout = MainLayout.class)
 @PermitAll
 @Transactional
-public class AddUser extends Div {
+public class AddUserView extends Div {
     public User user = new User();
-    public VerticalLayout verticalLayout = new VerticalLayout();
+    public User userCopy = new User();
+    public VerticalLayout childComponentLayout = new VerticalLayout();
+    public HorizontalLayout buttonLayout = new HorizontalLayout();
     FormLayout userFormLayout = new FormLayout();
 
     public TextField fullName = new TextField("Full Name");
@@ -56,7 +58,7 @@ public class AddUser extends Div {
     private final RoleRepository roleRepository;
 
 
-    public AddUser(UserRepository userRepository, PasswordEncoder passwordEncoder, RoleRepository roleRepository) {
+    public AddUserView(UserRepository userRepository, PasswordEncoder passwordEncoder, RoleRepository roleRepository) {
         this.userRepository = userRepository;
         user = new User();
         this.passwordEncoder = passwordEncoder;
@@ -68,11 +70,12 @@ public class AddUser extends Div {
         addClassNames("grid-container", "grid");
 
         configureFormLayout();
-        addSavebutton();
-        add(verticalLayout);
+        addButtons();
+        add(childComponentLayout);
     }
 
     protected void configureBinder(){
+        userCopy = user;
         userBinder.readBean(user);
 
         userBinder.forField(fullName)
@@ -93,7 +96,7 @@ public class AddUser extends Div {
         userFormLayout.setResponsiveSteps(new FormLayout.ResponsiveStep("500px", 2));
         userFormLayout.setColspan(password, 2);
         userFormLayout.setColspan(confirmPassword,2 );
-        verticalLayout.add(userFormLayout);
+        childComponentLayout.add(userFormLayout);
 
         passwordsValidityCheck();
     }
@@ -115,6 +118,12 @@ public class AddUser extends Div {
         });
     }
 
+    private void addButtons(){
+        addSavebutton();
+        addBackButton();
+        childComponentLayout.add(buttonLayout);
+    }
+
 
     private void addSavebutton(){
         Button saveButton = new Button("Save");
@@ -123,7 +132,16 @@ public class AddUser extends Div {
             userBinder.validate();
             validateAndSave();
         }));
-        verticalLayout.add(saveButton);
+        buttonLayout.add(saveButton);
+    }
+
+    private void addBackButton(){
+        Button backButton = new Button("Cancel");
+        backButton.addThemeVariants(ButtonVariant.LUMO_ERROR);
+        backButton.addClickListener((clickListener->{
+            getUI().ifPresent(ui-> ui.navigate("user-list"));
+        }));
+        buttonLayout.add(backButton);
     }
 
     private void validateAndSave(){

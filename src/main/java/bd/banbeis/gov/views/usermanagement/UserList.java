@@ -99,6 +99,9 @@ public class UserList extends VerticalLayout {
         addButtonLayout.setAlignItems(Alignment.END);
         Button newUserButton = new Button("Add New User", new Icon(VaadinIcon.PLUS));
         newUserButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
+        newUserButton.addClickListener(eventListener->{
+            getUI().ifPresent(ui-> ui.navigate("add-user-view"));
+        });
         addButtonLayout.add(newUserButton);
         add(addButtonLayout);
     }
