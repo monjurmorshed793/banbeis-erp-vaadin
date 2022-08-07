@@ -15,6 +15,7 @@ import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.component.textfield.EmailField;
 import com.vaadin.flow.component.textfield.PasswordField;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.BeanValidationBinder;
@@ -24,6 +25,7 @@ import com.vaadin.flow.data.value.ValueChangeMode;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.security.PermitAll;
 import java.util.List;
@@ -31,6 +33,7 @@ import java.util.List;
 @PageTitle("Add User")
 @Route(value="add-user", layout = MainLayout.class)
 @PermitAll
+@Transactional
 public class AddUser extends Div {
     public User user = new User();
     public VerticalLayout verticalLayout = new VerticalLayout();
@@ -39,6 +42,8 @@ public class AddUser extends Div {
     public TextField fullName = new TextField("Full Name");
     public TextField userName = new TextField("User Name");
     MultiSelectComboBox<Role> roles = new MultiSelectComboBox<>("Roles");
+
+    public EmailField email = new EmailField("Email");
 
     public PasswordField password = new PasswordField("Password");
     public PasswordField confirmPassword = new PasswordField("Confirm Password");
@@ -53,26 +58,27 @@ public class AddUser extends Div {
 
     public AddUser(UserRepository userRepository, PasswordEncoder passwordEncoder, RoleRepository roleRepository) {
         this.userRepository = userRepository;
-
+        user = new User();
         this.passwordEncoder = passwordEncoder;
         this.roleRepository = roleRepository;
-//        userBinder.bindInstanceFields(this);
+        userBinder = new BeanValidationBinder<>(User.class);
+        userBinder.bindInstanceFields(this);
         addClassNames("grid-container", "grid");
         configureFormLayout();
         addSavebutton();
-//        userBinder.bindInstanceFields(this.user);
         add(verticalLayout);
     }
 
     protected void configureBinder(){
+        userBinder.readBean(user);
 
         userBinder.forField(fullName)
                 .bind(User::getFullName, User::setFullName);
-        userBinder.forField(userName).bind(User::getUsername, User::setUsername).validate(true);
+        userBinder.forField(userName).bind(User::getUsername, User::setUsername);
+        userBinder.forField(email).bind(User::getEmail, User::setEmail);
         userBinder.forField(roles).bind(User::getRoles, User::setRoles).validate(true);
         userBinder.forField(password).bind(User::getPassword, User::setPassword);
         userBinder.forField(confirmPassword).bind(User::getConfirmPassword, User::setConfirmPassword);
-        userBinder.readBean(user);
     }
 
     private void configureFormLayout(){
@@ -80,7 +86,7 @@ public class AddUser extends Div {
         this.roles.setItems(roles);
         this.roles.setItemLabelGenerator(Role::getRole);
 
-        userFormLayout.add(fullName, userName, this.roles, password, confirmPassword);
+        userFormLayout.add(fullName, userName, this.roles, this.email, password, confirmPassword);
         userFormLayout.setResponsiveSteps(new FormLayout.ResponsiveStep("500px", 2));
         userFormLayout.setColspan(password, 2);
         userFormLayout.setColspan(confirmPassword,2 );
@@ -119,8 +125,8 @@ public class AddUser extends Div {
 
     private void validateAndSave(){
         try{
-            userBinder.writeBean(user);
-            user.setPassword(passwordEncoder.encode(user.getPassword()));
+            userBinder.writeBean(this.user);
+            user.setHashedPassword(passwordEncoder.encode(user.getPassword()));
             userRepository.save(user);
             Notification.show("Save Successful");
             getUI().ifPresent(ui-> ui.navigate("user-list"));
