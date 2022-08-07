@@ -61,9 +61,12 @@ public class AddUser extends Div {
         user = new User();
         this.passwordEncoder = passwordEncoder;
         this.roleRepository = roleRepository;
+
         userBinder = new BeanValidationBinder<>(User.class);
         userBinder.bindInstanceFields(this);
+
         addClassNames("grid-container", "grid");
+
         configureFormLayout();
         addSavebutton();
         add(verticalLayout);
@@ -144,20 +147,4 @@ public class AddUser extends Div {
             passwordValidationText.setText("");
         }
     }
-
-    public static abstract class AddUserFormEvent extends ComponentEvent<AddUser>{
-        private User user;
-        protected AddUserFormEvent(AddUser source, User user) {
-            super(source, false);
-
-            this.user   = user;
-        }
-    }
-
-    public static class SaveEvent extends AddUserFormEvent{
-        protected SaveEvent(AddUser source, User user) {
-            super(source, user);
-        }
-    }
-
 }
