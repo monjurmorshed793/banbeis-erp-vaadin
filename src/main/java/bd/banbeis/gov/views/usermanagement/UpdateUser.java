@@ -21,11 +21,8 @@ public class UpdateUser extends AddUser implements BeforeEnterObserver {
     @Override
     public void beforeEnter(BeforeEnterEvent beforeEnterEvent) {
         String username = beforeEnterEvent.getRouteParameters().get("username").orElseThrow();
-        user = updateUserRepository.findByUsername(username);
-        nameField.setValue(user.getFullName());
-        userNameField.setValue(user.getUsername());
-        roleField.setValue(user.getRoles());
-        userNameField.setReadOnly(true);
+        this.user = updateUserRepository.findByUsername(username);
+        configureBinder();
     }
 
 }
